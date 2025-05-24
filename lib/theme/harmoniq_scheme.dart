@@ -9,8 +9,8 @@ class HarmoniqScheme {
     onPrimary: HarmoniqColors.onPrimary,
     secondary: HarmoniqColors.accent,
     onSecondary: HarmoniqColors.onAccent,
-    surface: HarmoniqColors.lightSecondaryText,
-    onSurface: HarmoniqColors.lightHiddenText,
+    surface: HarmoniqColors.lightSurface,
+    onSurface: HarmoniqColors.onLightSurface,
     error: HarmoniqColors.error,
     onError: HarmoniqColors.onError,
   );
@@ -21,8 +21,8 @@ class HarmoniqScheme {
     onPrimary: HarmoniqColors.onPrimary,
     secondary: HarmoniqColors.accent,
     onSecondary: HarmoniqColors.onAccent,
-    surface: HarmoniqColors.darkSecondaryText,
-    onSurface: HarmoniqColors.darkHiddenText,
+    surface: HarmoniqColors.darkSurface,
+    onSurface: HarmoniqColors.onDarkSurface,
     error: HarmoniqColors.error,
     onError: HarmoniqColors.onError,
   );
@@ -31,25 +31,45 @@ class HarmoniqScheme {
 class HarmoniqTextTheme {
   static TextTheme lightTextTheme = TextTheme(
     displayMedium: TextStyles.display.copyWith(color: HarmoniqColors.primary),
-    headlineMedium: TextStyles.headline.copyWith(color: HarmoniqColors.darkPrimaryText),
-    headlineSmall: TextStyles.smallHeadline.copyWith(color: HarmoniqColors.darkPrimaryText),
+    headlineMedium: TextStyles.headline.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
+    headlineSmall: TextStyles.smallHeadline.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.lightBodyText),
-    bodySmall: TextStyles.smallBody.copyWith(color: HarmoniqColors.lightBodyText),
-    labelLarge: TextStyles.largeLabel.copyWith(color: HarmoniqColors.darkPrimaryText),
-    labelMedium: TextStyles.mediumLabel.copyWith(color: HarmoniqColors.darkPrimaryText),
-    labelSmall: TextStyles.smallLabel.copyWith(color: HarmoniqColors.lightPrimaryText),
+    bodySmall: TextStyles.smallBody.copyWith(
+      color: HarmoniqColors.lightBodyText,
+    ),
+    labelLarge: TextStyles.largeLabel.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
+    labelMedium: TextStyles.mediumLabel.copyWith(
+      color: HarmoniqColors.lightHiddenText,
+    ),
+    labelSmall: TextStyles.smallLabel.copyWith(color: Colors.white),
   );
 
   static TextTheme darkTextTheme = TextTheme(
     displayMedium: TextStyles.display.copyWith(color: HarmoniqColors.primary),
-    headlineMedium: TextStyles.headline.copyWith(color: HarmoniqColors.darkPrimaryText),
-    headlineSmall: TextStyles.smallHeadline.copyWith(color: HarmoniqColors.darkPrimaryText),
+    headlineMedium: TextStyles.headline.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
+    headlineSmall: TextStyles.smallHeadline.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.darkBodyText),
-    bodySmall: TextStyles.smallBody.copyWith(color: HarmoniqColors.darkBodyText),
-    labelLarge: TextStyles.largeLabel.copyWith(color: HarmoniqColors.darkPrimaryText),
-    labelMedium: TextStyles.mediumLabel.copyWith(color: HarmoniqColors.darkPrimaryText),
-    labelSmall: TextStyles.smallLabel.copyWith(color: HarmoniqColors.lightPrimaryText),
+    bodySmall: TextStyles.smallBody.copyWith(
+      color: HarmoniqColors.darkBodyText,
+    ),
+    labelLarge: TextStyles.largeLabel.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
+    labelMedium: TextStyles.mediumLabel.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
+    labelSmall: TextStyles.smallLabel.copyWith(color: Colors.white),
   );
 }

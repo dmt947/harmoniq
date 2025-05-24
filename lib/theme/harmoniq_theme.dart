@@ -18,21 +18,22 @@ class HarmoniqTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: HarmoniqScheme.light.secondary,
+          backgroundColor: HarmoniqScheme.light.primary,
           foregroundColor: HarmoniqColors.darkBodyText,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           textStyle: HarmoniqTextTheme.lightTextTheme.labelLarge
         )
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: HarmoniqScheme.light.surface,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        labelStyle: HarmoniqTextTheme.lightTextTheme.labelSmall,
-        floatingLabelStyle: HarmoniqTextTheme.lightTextTheme.labelSmall
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+        labelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium,
+        floatingLabelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium
       ),
       iconTheme: IconThemeData(
-        color: HarmoniqScheme.light.secondary,        
+        color: HarmoniqColors.lightBackground,        
       )
     );
   }
@@ -42,6 +43,7 @@ class HarmoniqTheme {
       useMaterial3: true,
       colorScheme: HarmoniqScheme.dark,
       textTheme: HarmoniqTextTheme.darkTextTheme,
+      primaryColor: HarmoniqScheme.dark.primary,
       scaffoldBackgroundColor: HarmoniqColors.darkBackground,
       appBarTheme: AppBarTheme(
         backgroundColor: HarmoniqScheme.dark.primary,
@@ -50,21 +52,22 @@ class HarmoniqTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: HarmoniqScheme.dark.secondary,
+          backgroundColor: HarmoniqScheme.dark.primary,
           foregroundColor: HarmoniqColors.darkBodyText,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           textStyle: HarmoniqTextTheme.darkTextTheme.labelLarge
         )
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: HarmoniqScheme.dark.surface,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        labelStyle: HarmoniqTextTheme.darkTextTheme.labelSmall,
-        floatingLabelStyle: HarmoniqTextTheme.darkTextTheme.labelSmall
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+        labelStyle: HarmoniqTextTheme.darkTextTheme.labelMedium,
+        floatingLabelStyle: HarmoniqTextTheme.darkTextTheme.labelMedium
       ),
       iconTheme: IconThemeData(
-        color: HarmoniqScheme.dark.secondary,        
+        color: HarmoniqColors.lightBackground,        
       )
     );
   }

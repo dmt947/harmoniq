@@ -23,4 +23,9 @@ class HarmoniqColors {
 
   static const Color darkBodyText = Color(0xffffffff);
   static const Color lightBodyText = Color(0xff000000);
+
+  static const Color lightSurface = Color(0xFFC7C7C7);
+  static const Color onLightSurface = Color(0xFF969696);
+  static const Color darkSurface = Color(0xff8f8e8e);
+  static const Color onDarkSurface = Color(0xff6e6e6e);
 }
