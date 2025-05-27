@@ -30,10 +30,15 @@ class HarmoniqTheme {
         fillColor: HarmoniqScheme.light.surface,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
         labelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium,
-        floatingLabelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium
+        floatingLabelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium,
+        
       ),
       iconTheme: IconThemeData(
         color: HarmoniqColors.lightBackground,        
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: HarmoniqColors.onLightSurface,
+        contentTextStyle: HarmoniqTextTheme.lightTextTheme.labelMedium?.copyWith(color: HarmoniqColors.error),
       )
     );
   }
@@ -68,6 +73,10 @@ class HarmoniqTheme {
       ),
       iconTheme: IconThemeData(
         color: HarmoniqColors.lightBackground,        
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: HarmoniqColors.onDarkSurface,
+        contentTextStyle: HarmoniqTextTheme.darkTextTheme.labelMedium?.copyWith(color: HarmoniqColors.error)
       )
     );
   }

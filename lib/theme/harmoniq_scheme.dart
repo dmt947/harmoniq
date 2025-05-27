@@ -38,6 +38,9 @@ class HarmoniqTextTheme {
       color: HarmoniqColors.darkPrimaryText,
     ),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
+    bodyLarge: TextStyles.largeBody.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.lightBodyText),
     bodySmall: TextStyles.smallBody.copyWith(
       color: HarmoniqColors.lightBodyText,
@@ -60,6 +63,9 @@ class HarmoniqTextTheme {
       color: HarmoniqColors.darkPrimaryText,
     ),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
+    bodyLarge: TextStyles.largeBody.copyWith(
+      color: HarmoniqColors.darkPrimaryText,
+    ),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.darkBodyText),
     bodySmall: TextStyles.smallBody.copyWith(
       color: HarmoniqColors.darkBodyText,

@@ -37,6 +37,11 @@ class TextStyles {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle largeBody = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold
+  );
+
   static const TextStyle body = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.normal,
