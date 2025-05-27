@@ -6,79 +6,153 @@ import 'package:harmoniq/widgets/BlockButton.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  bool _loading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // Methods
-  // Sign in with Google
-  Future<void> signInWithGoogle() async {
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  // Reusable method to display errors
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  // Encapsulates setState on async operations
+  Future<void> _setLoadingWhile(Future<void> Function() action) async {
     setState(() => _loading = true);
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        // User cancelled operation
-        setState(() => _loading = false);
-        return;
-      }
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      await action();
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
 
+  Future<void> signInWithGoogle() async {
+    await _setLoadingWhile(() async {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return;
+
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
-      String msg = switch (e.code) {
-        'account-exists-with-different-credential' =>
-          'Ya existe una cuenta con otro metodo',
-        'invalid-credential' => 'Credencial Invalida, intenta de nuevo',
-        _ => 'Eror al iniciar sesion: ${e.message}',
-      };
+      // First signs in
+      final userCredential = await _auth.signInWithCredential(credential);
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ocurrio un error inesperado: $e')),
-      );
-      print(e);
-    }
+      // Then updates username
+      final displayName = googleUser.displayName;
+      await userCredential.user?.updateDisplayName(displayName);
+
+      await userCredential.user?.reload();
+    }).catchError((e) {
+      if (e is FirebaseAuthException) {
+        final msg = switch (e.code) {
+          'account-exists-with-different-credential' =>
+            'Ya existe una cuenta con otro método',
+          'invalid-credential' => 'Credencial inválida, intenta de nuevo',
+          _ => 'Error al iniciar sesión',
+        };
+        _showError(msg);
+      } else {
+        _showError('Ocurrió un error inesperado: $e');
+      }
+    });
   }
 
-  // Sign in with password and email
   Future<void> signInWithCredentials() async {
-    setState(() => _loading = true);
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() => _loading = false);
+    FocusScope.of(context).unfocus();
+    await _setLoadingWhile(() async {
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
 
-      String msg = switch (e.code) {
-        'user-not-found' => 'Usuario no encontrado',
-        'wrong-password' => 'Contraseña incorrecta, intenta de nuevo',
-        'invalid-email' => 'Correo invalido',
-        _ => 'Error al iniciar sesion: ${e.message}',
-      };
+      if (email.isEmpty || password.isEmpty) {
+        throw FirebaseAuthException(code: 'missing-fields');
+      }
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ocurrio un error inesperado: $e')),
-      );
-      print(e);
-    }
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    }).catchError((e) {
+      if (e is FirebaseAuthException) {
+        final msg = switch (e.code) {
+          'user-not-found' => 'Usuario no encontrado',
+          'wrong-password' => 'Contraseña incorrecta, intenta de nuevo',
+          'invalid-email' => 'Correo inválido',
+          'missing-fields' => 'Debes proporcionar un correo y contraseña',
+          _ => 'Error al iniciar sesión: ${e.code}',
+        };
+        _showError(msg);
+      } else {
+        _showError('Ocurrió un error inesperado: $e');
+      }
+    });
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label, {
+    bool obscure = false,
+    TextInputType keyboard = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      keyboardType: keyboard,
+      decoration: InputDecoration(labelText: label),
+    );
+  }
+
+  Widget _buildFormFields(BuildContext context) {
+    return Column(
+      children: [
+        _buildTextField(emailController, 'Correo electronico', keyboard: TextInputType.emailAddress),
+        const SizedBox(height: 20),
+        _buildTextField(passwordController, 'Contraseña', obscure: true),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SignupPage()),
+            );
+          },
+          child: Text(
+            'No tengo cuenta',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Blockbutton(
+          onPressed: signInWithCredentials,
+          child: const Text('Iniciar sesión'),
+        ),
+        const SizedBox(height: 20),
+        Blockbutton(
+          onPressed: signInWithGoogle,
+          child: const Text('Iniciar sesión con Google'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -92,8 +166,6 @@ class _LoginPageState extends State<LoginPage> {
                 : Stack(
                   children: [
                     Container(
-                      //TO DO: Add background image
-                      // Background of the screen
                       color: Theme.of(context).appBarTheme.backgroundColor,
                     ),
                     Align(
@@ -108,17 +180,17 @@ class _LoginPageState extends State<LoginPage> {
                           reverse: true,
                           child: Center(
                             child: Container(
-                              padding: EdgeInsets.all(24),
+                              padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 color:
                                     Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(32),
                                   topRight: Radius.circular(32),
                                 ),
                               ),
                               child: Padding(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.only(top: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -129,67 +201,11 @@ class _LoginPageState extends State<LoginPage> {
                                             context,
                                           ).textTheme.displayMedium,
                                     ),
-                                    SizedBox(height: 40),
-                                    Column(
-                                      children: [
-                                        TextField(
-                                          controller: emailController,
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Correo electrónico',
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        TextField(
-                                          controller: passwordController,
-                                          obscureText: true,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Contraseña',
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Center(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => SignupPage(),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              'No tengo cuenta',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.titleMedium,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 30),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Blockbutton(
-                                          onPressed: signInWithCredentials,
-                                          child: Text('Iniciar Sesion'),
-                                        ),
-                                        SizedBox(height: 20),
-                                        Blockbutton(
-                                          onPressed: signInWithGoogle,
-                                          child: Text(
-                                            // TODO: Change Google Button to the one in the requirements
-                                            'Iniciar Sesion con Google',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 50),
+                                    const SizedBox(height: 40),
+                                    _buildFormFields(context),
+                                    const SizedBox(height: 30),
+                                    _buildButtons(),
+                                    const SizedBox(height: 50),
                                   ],
                                 ),
                               ),
