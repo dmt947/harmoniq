@@ -13,37 +13,121 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final TextEditingController userController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-  bool _loading = false;
-  String _message = '';
+  final _userController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  Future<void> signIn() async {
-    if (passwordController.text.trim() ==
-        confirmPasswordController.text.trim()) {
-      createUser();
-    } else {
-      _message = 'La contraseña debe concidir';
+  bool _loading = false;
+
+  Future<void> _signUp() async {
+    FocusScope.of(context).unfocus();
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+    final username = _userController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || username.isEmpty) {
+      _showError('Completa todos los campos');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showError('Las contraseñas no coinciden');
+      return;
+    }
+
+    await _setLoadingWhile(() async {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      await userCredential.user?.updateDisplayName(username);
+
+      // Auto Sign In
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    }).catchError((e) {
+      if (e is FirebaseAuthException) {
+        String msg = switch (e.code) {
+          'email-already-in-use' => 'El correo ya ha sido registrado',
+          'weak-password' => 'La contraseña debe tener más de 6 caracteres',
+          _ => 'Error al registrar: ${e.message}',
+        };
+        _showError(msg);
+      } else {
+        _showError('Ocurrio un error inesperado: $e');
+      }
+    });
+  }
+
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  // Encapsulates setState on async operations
+  Future<void> _setLoadingWhile(Future<void> Function() action) async {
+    setState(() => _loading = true);
+    try {
+      await action();
+    } finally {
+      setState(() => _loading = false);
     }
   }
 
-  Future<void> createUser() async {
-    setState(() => _loading = true);
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label, {
+    bool obscure = false,
+    TextInputType keyboard = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      keyboardType: keyboard,
+      decoration: InputDecoration(labelText: label),
+    );
+  }
 
-    try {
-      await _auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() => _loading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'Error al registrarse')),
-      );
-    }
+  Widget _buildFormFields(BuildContext context) {
+    return Column(
+      children: [
+        _buildTextField(_userController, 'Nombre de Usuario'),
+        const SizedBox(height: 20),
+        _buildTextField(
+          _emailController,
+          'Correo electrónico',
+          keyboard: TextInputType.emailAddress,
+        ),
+        const SizedBox(height: 20),
+        _buildTextField(_passwordController, 'Contraseña', obscure: true),
+        const SizedBox(height: 20),
+        _buildTextField(
+          _confirmPasswordController,
+          'Confirmar contraseña',
+          obscure: true,
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+            );
+          },
+          child: Text(
+            'Ya tengo cuenta',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtons() {
+    return Blockbutton(onPressed: _signUp, child: const Text('Registrarme'));
+    //TODO: Add Google Button
   }
 
   @override
@@ -57,10 +141,7 @@ class _SignupPageState extends State<SignupPage> {
                 : Stack(
                   children: [
                     Container(
-                      //TO DO: Add background image
-                      // Background of the screen
                       color: Theme.of(context).appBarTheme.backgroundColor,
-                      child: Align(alignment: Alignment.bottomCenter),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
@@ -74,101 +155,29 @@ class _SignupPageState extends State<SignupPage> {
                           reverse: true,
                           child: Center(
                             child: Container(
-                              padding: EdgeInsets.all(24),
+                              padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 color:
                                     Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(32),
-                                  topRight: Radius.circular(32),
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(32),
                                 ),
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: Text(
-                                        'Crea una cuenta nueva',
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.titleLarge,
-                                      ),
-                                    ),
-                                    SizedBox(height: 30,),
-                                    Column(
-                                      children: [
-                                        TextField(
-                                          controller: userController,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Nombre de Usuario',
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        TextField(
-                                          controller: emailController,
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Correo electrónico',
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        TextField(
-                                          controller: passwordController,
-                                          obscureText: true,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Contraseña',
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        TextField(
-                                          controller: confirmPasswordController,
-                                          obscureText: true,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Confirmar contraseña',
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Center(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => LoginPage(),
-                                                ),
-                                              );
-                                            },
-                                            child: Text(
-                                              'Ya tengo cuenta',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.titleMedium,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 30),
-                                    Blockbutton(
-                                      onPressed: signIn,
-                                      child: Text('Registrarme'),
-                                    ),
-                                    Text(
-                                      _message,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium!.copyWith(
-                                        color:
-                                            Theme.of(context).colorScheme.error,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Crea una cuenta nueva',
+                                    style:
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.headlineMedium,
+                                  ),
+                                  const SizedBox(height: 30),
+                                  _buildFormFields(context),
+                                  const SizedBox(height: 30),
+                                  _buildButtons(),
+                                ],
                               ),
                             ),
                           ),
