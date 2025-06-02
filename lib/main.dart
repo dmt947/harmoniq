@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:harmoniq/screens/AuthScreen.dart';
-import 'package:harmoniq/screens/SplashScreen.dart';
+import 'package:harmoniq/screens/auth_screen.dart';
+import 'package:harmoniq/screens/splash_screen.dart';
 import 'package:harmoniq/theme/harmoniq_theme.dart';
 
 void main() async {

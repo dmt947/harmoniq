@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:harmoniq/models/MusicProject.dart';
+import 'package:harmoniq/models/music_project.dart';
 
 class MidiEditorTab extends StatelessWidget {
   final MusicProject project;

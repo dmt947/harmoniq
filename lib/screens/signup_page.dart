@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:harmoniq/screens/LoginPage.dart';
-import 'package:harmoniq/widgets/BlockButton.dart';
+import 'package:harmoniq/screens/login_page.dart';
+import 'package:harmoniq/widgets/block_button.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

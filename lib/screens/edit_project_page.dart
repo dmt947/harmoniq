@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:harmoniq/models/MusicProject.dart';
-import 'package:harmoniq/screens/tabs/AIFeatures.dart';
-import 'package:harmoniq/screens/tabs/MidiEditorTab.dart';
-import 'package:harmoniq/screens/tabs/ProjectSettingsTab.dart';
+import 'package:harmoniq/models/music_project.dart';
+import 'package:harmoniq/screens/tabs/ai_features_tab.dart';
+import 'package:harmoniq/screens/tabs/midi_editor_tab.dart';
+import 'package:harmoniq/screens/tabs/project_settings_tab.dart';
+
 
 class EditProjectPage extends StatefulWidget {
   final MusicProject project;

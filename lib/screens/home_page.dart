@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:harmoniq/models/MusicProject.dart';
-import 'package:harmoniq/screens/AddProjectPage.dart';
-import 'package:harmoniq/screens/EditProjectPage.dart';
-import 'package:harmoniq/widgets/ProjectCard.dart';
+import 'package:harmoniq/models/music_project.dart';
+import 'package:harmoniq/screens/add_project_page.dart';
+import 'package:harmoniq/screens/edit_project_page.dart';
+import 'package:harmoniq/widgets/project_card.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
