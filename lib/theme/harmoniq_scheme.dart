@@ -32,11 +32,12 @@ class HarmoniqTextTheme {
   static TextTheme lightTextTheme = TextTheme(
     displayMedium: TextStyles.display.copyWith(color: HarmoniqColors.primary),
     headlineMedium: TextStyles.headline.copyWith(
-      color: HarmoniqColors.darkPrimaryText,
+      color: HarmoniqColors.lightBodyText,
     ),
     headlineSmall: TextStyles.smallHeadline.copyWith(
       color: HarmoniqColors.darkPrimaryText,
     ),
+    titleLarge: TextStyles.titleLarge.copyWith(color: HarmoniqColors.primary),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
     bodyLarge: TextStyles.largeBody.copyWith(
       color: HarmoniqColors.darkPrimaryText,
@@ -62,9 +63,10 @@ class HarmoniqTextTheme {
     headlineSmall: TextStyles.smallHeadline.copyWith(
       color: HarmoniqColors.darkPrimaryText,
     ),
+    titleLarge: TextStyles.titleLarge.copyWith(color: HarmoniqColors.primary),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
     bodyLarge: TextStyles.largeBody.copyWith(
-      color: HarmoniqColors.darkPrimaryText,
+      color: HarmoniqColors.darkPrimaryText,    
     ),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.darkBodyText),
     bodySmall: TextStyles.smallBody.copyWith(

@@ -13,10 +13,14 @@ class TextStyles {
   );
 
   static const TextStyle smallHeadline = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.normal,
+    fontSize: 24,
+    fontWeight: FontWeight.w200,
   );
 
+  static const TextStyle titleLarge = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold
+  );
   static const TextStyle title = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
@@ -39,7 +43,7 @@ class TextStyles {
 
   static const TextStyle largeBody = TextStyle(
     fontSize: 18,
-    fontWeight: FontWeight.bold
+    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle body = TextStyle(

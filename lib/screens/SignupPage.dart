@@ -48,6 +48,10 @@ class _SignupPageState extends State<SignupPage> {
 
       // Auto Sign In
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      // Returns to AuthScreen
+      Navigator.pop(context);
+      
     }).catchError((e) {
       if (e is FirebaseAuthException) {
         String msg = switch (e.code) {

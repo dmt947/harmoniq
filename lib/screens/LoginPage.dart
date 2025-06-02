@@ -79,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
     await _setLoadingWhile(() async {
       final email = emailController.text.trim();
       final password = passwordController.text.trim();
-
       if (email.isEmpty || password.isEmpty) {
         throw FirebaseAuthException(code: 'missing-fields');
       }
@@ -118,7 +117,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildFormFields(BuildContext context) {
     return Column(
       children: [
-        _buildTextField(emailController, 'Correo electronico', keyboard: TextInputType.emailAddress),
+        _buildTextField(
+          emailController,
+          'Correo electronico',
+          keyboard: TextInputType.emailAddress,
+        ),
         const SizedBox(height: 20),
         _buildTextField(passwordController, 'Contraseña', obscure: true),
         const SizedBox(height: 10),
