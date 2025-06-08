@@ -16,6 +16,15 @@ class HarmoniqTheme {
         foregroundColor: HarmoniqColors.darkBodyText,
         elevation: 0,
       ),
+      tabBarTheme: TabBarTheme(
+        dividerColor: HarmoniqColors.darkBackground,
+        labelColor: HarmoniqColors.darkBodyText,
+        unselectedLabelColor: HarmoniqColors.darkHiddenText,
+        indicator: BoxDecoration(
+          color: HarmoniqColors.primary,
+          borderRadius: BorderRadius.all(Radius.circular(24)),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: HarmoniqScheme.light.primary,
@@ -33,6 +42,7 @@ class HarmoniqTheme {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
         labelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium,
         floatingLabelStyle: HarmoniqTextTheme.lightTextTheme.labelMedium,
+        hintStyle: HarmoniqTextTheme.lightTextTheme.labelMedium
       ),
       iconTheme: IconThemeData(color: HarmoniqColors.lightBackground),
       snackBarTheme: SnackBarThemeData(
@@ -61,12 +71,12 @@ class HarmoniqTheme {
         elevation: 0,
       ),
       tabBarTheme: TabBarTheme(
-        dividerColor: HarmoniqColors.darkBackground,
+        dividerColor: HarmoniqColors.darkBodyText,
         labelColor: HarmoniqColors.darkBodyText,
-        unselectedLabelColor: HarmoniqColors.lightBodyText,
+        unselectedLabelColor: HarmoniqColors.lightHiddenText,
         indicator: BoxDecoration(
           color: HarmoniqColors.primary,
-          borderRadius: BorderRadius.all(Radius.circular(24))
+          borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -86,10 +96,11 @@ class HarmoniqTheme {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
         labelStyle: HarmoniqTextTheme.darkTextTheme.labelMedium,
         floatingLabelStyle: HarmoniqTextTheme.darkTextTheme.labelMedium,
+        hintStyle: HarmoniqTextTheme.darkTextTheme.labelMedium
       ),
       iconTheme: IconThemeData(color: HarmoniqColors.lightBackground),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: HarmoniqColors.onDarkSurface,
+        backgroundColor: HarmoniqColors.darkBackground,
         contentTextStyle: HarmoniqTextTheme.darkTextTheme.labelMedium?.copyWith(
           color: HarmoniqColors.error,
         ),

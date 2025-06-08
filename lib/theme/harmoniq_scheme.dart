@@ -40,7 +40,7 @@ class HarmoniqTextTheme {
     titleLarge: TextStyles.titleLarge.copyWith(color: HarmoniqColors.primary),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
     bodyLarge: TextStyles.largeBody.copyWith(
-      color: HarmoniqColors.darkPrimaryText,
+      color: HarmoniqColors.lightBodyText,
     ),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.lightBodyText),
     bodySmall: TextStyles.smallBody.copyWith(
@@ -66,7 +66,7 @@ class HarmoniqTextTheme {
     titleLarge: TextStyles.titleLarge.copyWith(color: HarmoniqColors.primary),
     titleMedium: TextStyles.title.copyWith(color: HarmoniqColors.primary),
     bodyLarge: TextStyles.largeBody.copyWith(
-      color: HarmoniqColors.darkPrimaryText,    
+      color: HarmoniqColors.darkPrimaryText,
     ),
     bodyMedium: TextStyles.body.copyWith(color: HarmoniqColors.darkBodyText),
     bodySmall: TextStyles.smallBody.copyWith(

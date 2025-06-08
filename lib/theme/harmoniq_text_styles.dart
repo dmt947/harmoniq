@@ -19,7 +19,7 @@ class TextStyles {
 
   static const TextStyle titleLarge = TextStyle(
     fontSize: 24,
-    fontWeight: FontWeight.bold
+    fontWeight: FontWeight.bold,
   );
   static const TextStyle title = TextStyle(
     fontSize: 16,
@@ -45,7 +45,6 @@ class TextStyles {
     fontSize: 18,
     fontWeight: FontWeight.bold,
   );
-
   static const TextStyle body = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.normal,
