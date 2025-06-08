@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Blockbutton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final Future<void> Function()? onPressed;
   final Widget child;
   const Blockbutton({super.key, required this.onPressed, required this.child});
 
