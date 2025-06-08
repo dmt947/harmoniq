@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:harmoniq/firebase_options.dart';
+import 'package:harmoniq/services/audio_service.dart';
 
 class SplashScreen extends StatefulWidget {
   final VoidCallback onInitializationDone;
@@ -15,6 +16,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final _audioService = AudioService();
   @override
   void initState() {
     super.initState();
@@ -25,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
+    await _audioService.init();
     await Future.wait([
       Future.delayed(Duration(milliseconds: 500)),
       FirebaseAuth.instance.authStateChanges().first,
