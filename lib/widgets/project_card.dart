@@ -36,11 +36,6 @@ class ProjectCard extends StatelessWidget {
                       project.name,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Autor: ${project.author}',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
                   ],
                 ),
               ),
