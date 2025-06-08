@@ -46,3 +46,6 @@ app.*.map.json
 firebase.json
 lib/firebase_options.dart
 google-services.json
+
+# Gemini API key
+lib/gemini_api.dart
