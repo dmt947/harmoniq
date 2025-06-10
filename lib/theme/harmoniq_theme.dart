@@ -57,9 +57,9 @@ class HarmoniqTheme {
       ),
       iconTheme: IconThemeData(color: HarmoniqScheme.light.onBackground),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: HarmoniqScheme.light.onSurface,
+        backgroundColor: HarmoniqScheme.light.surface,
         contentTextStyle: HarmoniqTextTheme.lightTextTheme.labelMedium
-            ?.copyWith(color: HarmoniqScheme.light.onError),
+            ?.copyWith(color: HarmoniqScheme.light.onSurface),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: HarmoniqScheme.light.primary,
@@ -136,9 +136,9 @@ class HarmoniqTheme {
       ),
       iconTheme: IconThemeData(color: HarmoniqScheme.dark.onBackground),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: HarmoniqScheme.dark.onSurface,
+        backgroundColor: HarmoniqScheme.dark.surface,
         contentTextStyle: HarmoniqTextTheme.darkTextTheme.labelMedium?.copyWith(
-          color: HarmoniqScheme.dark.onError,
+          color: HarmoniqScheme.dark.onSurface,
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(

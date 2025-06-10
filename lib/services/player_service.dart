@@ -14,66 +14,80 @@ class PlayerService {
   MusicProject? _currentProject;
 
   final ValueNotifier<bool> isPlayingNotifier = ValueNotifier<bool>(false);
-  final AudioService _audioService = AudioService();
+  final AudioService _audioService = AudioService(); 
 
-  void playTrack({required MusicProject project}) {
-    _currentProject = project;
+  /// Starts reproduction
+  void playTrack({required MusicProject project}) async { 
+    _currentProject = project; 
 
     if (isPlayingNotifier.value) {
-      stop();
+      stop(); 
     }
 
+    
     if (!_audioService.isInitialized) {
-      _audioService.init().then((_) {
-        if (_audioService.isInitialized) {
-          _startPlayback();
-        } else {
-          isPlayingNotifier.value = false; 
-        }
-      });
-    } else {
-      _startPlayback(); 
+      await _audioService.init(); // AWAIT initialization
+      if (!_audioService.isInitialized) {
+        isPlayingNotifier.value = false; 
+        return; 
+      }
     }
+    
+    _startPlayback(); 
   }
 
-  void _startPlayback() {
+  void _startPlayback() async {
     isPlayingNotifier.value = true;
-    _currentBeat = 0.0;
+    _currentBeat = 0.0; 
+    final Track currentTrack = _currentProject!.track; 
+
+    await _audioService.changeInstrument(
+      program: currentTrack.instrumentPreset,
+    );
+
+    _audioService.stopAllNotes(currentTrack.notes);
+
 
     final double msPerBeat = 60000.0 / _currentProject!.tempo; 
-    
-    final double msPerTick = msPerBeat * _currentProject!.track.minimumSubdivision;
+    final double msPerTick = msPerBeat * currentTrack.minimumSubdivision;
 
     double maxEndBeat = 0.0;
-    if (_currentProject!.track.notes.isNotEmpty) {
-      for (final note in _currentProject!.track.notes) {
+    if (currentTrack.notes.isNotEmpty) {
+      for (final note in currentTrack.notes) {
         final noteEnd = note.startBeat + note.duration;
         if (noteEnd > maxEndBeat) {
           maxEndBeat = noteEnd;
         }
       }
     }
-    final double effectiveTrackEndBeat = maxEndBeat + _currentProject!.track.minimumSubdivision;
+    // Margin to make sure that the last notes plays succesfully
+    final double effectiveTrackEndBeat = maxEndBeat + currentTrack.minimumSubdivision;
 
     _playbackTimer = Timer.periodic(
       Duration(milliseconds: msPerTick.round()),
       (timer) {
         if (!isPlayingNotifier.value) {
-          timer.cancel();
+          timer.cancel(); 
           return;
         }
 
-        final Track currentTrack = _currentProject!.track;
-
-        final double tolerance = _currentProject!.track.minimumSubdivision / 2.0; 
+        final double tolerance = currentTrack.minimumSubdivision / 2.0; 
         
         for (final note in currentTrack.notes) {
           if ((note.startBeat - _currentBeat).abs() < tolerance) {
             _audioService.playNote(key: note.pitch, velocity: note.velocity);
+
+            
+            final noteDurationMs = (note.duration * msPerBeat).round();
+            
+            Future.delayed(Duration(milliseconds: noteDurationMs), () {
+                _audioService.stopNote(key: note.pitch);
+            });
           }
         }
         
-        _currentBeat += _currentProject!.track.minimumSubdivision; 
+        _currentBeat += currentTrack.minimumSubdivision; 
+        
         if (_currentBeat >= effectiveTrackEndBeat) { 
           stop();
         }
@@ -81,9 +95,10 @@ class PlayerService {
     );
   }
 
+  /// Stops and disposes
   void stop() {
-    _playbackTimer?.cancel();
-    isPlayingNotifier.value = false; 
+    _playbackTimer?.cancel(); 
+    isPlayingNotifier.value = false;
     _currentBeat = 0.0; 
 
     if (_currentProject != null) {
@@ -93,13 +108,13 @@ class PlayerService {
     }
   }
 
-  void seekTo(double beat) { 
+  void seekTo(double beat) {
     _currentBeat = beat; 
-    if (isPlayingNotifier.value) {
-      stop(); 
-      playTrack(project: _currentProject!);
+    if (isPlayingNotifier.value && _currentProject != null) { 
+      stop();
+      playTrack(project: _currentProject!); 
     }
   }
 
-  double getCurrentBeat() => _currentBeat;
+  double getCurrentBeat() => _currentBeat; 
 }

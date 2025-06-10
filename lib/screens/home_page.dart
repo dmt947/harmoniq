@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/screens/edit_project_page.dart';
+import 'package:harmoniq/screens/settings_page.dart';
 import 'package:harmoniq/screens/user_profile_screen.dart';
 import 'package:harmoniq/services/player_service.dart';
 import 'package:harmoniq/services/project_service.dart';
@@ -207,26 +208,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.helloUser(userName)),
         actions: [
-          GestureDetector(
-            onTap: () {
+          IconButton(
+            onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const UserProfileScreen()),
+                MaterialPageRoute(builder: (_) => const SettingsPage()),
               );
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: CircleAvatar(
-                backgroundImage:
-                    currentUser?.photoURL != null
-                        ? NetworkImage(currentUser!.photoURL!)
-                        : null,
-                child:
-                    currentUser?.photoURL == null
-                        ? const Icon(Icons.person)
-                        : null,
-              ),
-            ),
+            icon: Icon(Icons.settings),
           ),
         ],
       ),

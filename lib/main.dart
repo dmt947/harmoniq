@@ -5,8 +5,14 @@ import 'package:harmoniq/screens/splash_screen.dart';
 import 'package:harmoniq/theme/harmoniq_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() async {
+final ValueNotifier<ThemeMode> currentThemeMode = ValueNotifier(
+  ThemeMode.system,
+);
+final ValueNotifier<Locale?> currentLocale = ValueNotifier(null);
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const Harmoniq());
 }
 
@@ -20,6 +26,24 @@ class Harmoniq extends StatefulWidget {
 class _HarmoniqState extends State<Harmoniq> {
   bool _initialized = false;
 
+  @override
+  void initState() {
+    super.initState();
+    currentThemeMode.addListener(_onThemeOrLocaleChanged);
+    currentLocale.addListener(_onThemeOrLocaleChanged);
+  }
+
+  @override
+  void dispose() {
+    currentThemeMode.removeListener(_onThemeOrLocaleChanged);
+    currentLocale.removeListener(_onThemeOrLocaleChanged);
+    super.dispose();
+  }
+
+  void _onThemeOrLocaleChanged() {
+    setState(() {});
+  }
+
   void _finishInitialization() {
     setState(() {
       _initialized = true;
@@ -30,20 +54,22 @@ class _HarmoniqState extends State<Harmoniq> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Harmoniq',
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
-        AppLocalizations.delegate, // El delegado generado
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en', ''), Locale('es', '')],
-      darkTheme: HarmoniqTheme.darkTheme,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: HarmoniqTheme.lightTheme,
-      themeMode: ThemeMode.system,
+      darkTheme: HarmoniqTheme.darkTheme,
+      themeMode: currentThemeMode.value,
+      locale: currentLocale.value,
       home:
           !_initialized
               ? SplashScreen(onInitializationDone: _finishInitialization)
-              : AuthScreen(),
+              : const AuthScreen(),
     );
   }
 }
