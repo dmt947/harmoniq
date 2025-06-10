@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class NoteEvent {
   final int pitch;
   final double startBeat;
@@ -60,11 +62,13 @@ class Track {
   String name;
   List<NoteEvent> notes;
   double minimumSubdivision;
+  int instrumentPreset;
 
   Track({
     required this.name,
     required this.notes,
     this.minimumSubdivision = 0.25,
+    this.instrumentPreset = 52,
   });
 
   factory Track.empty({String? name, double? minimumSubdivision}) {
@@ -79,6 +83,7 @@ class Track {
       'name': name,
       'notes': notes.map((note) => note.toJson()).toList(),
       'minimumSubdivision': minimumSubdivision,
+      'instrumentPreset': instrumentPreset,
     };
   }
 
@@ -95,6 +100,7 @@ class Track {
           [],
       minimumSubdivision:
           (json['minimumSubdivision'] as num?)?.toDouble() ?? 0.25,
+      instrumentPreset: json['instrumentPreset'] as int? ?? 0,
     );
   }
 }
@@ -128,6 +134,12 @@ class MusicProject {
     };
   }
 
+  factory MusicProject.empty({String? name}) {
+    return MusicProject(
+      id: const Uuid().v4(),
+      name: name ?? 'P-harmoniq', tempo: 120, genre: 'Pop',
+    );
+  }
   factory MusicProject.fromJson(Map<String, dynamic> json) {
     return MusicProject(
       id: json['id'] as String,

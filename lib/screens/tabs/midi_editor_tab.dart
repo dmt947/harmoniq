@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/services/player_service.dart';
 import 'package:harmoniq/theme/harmoniq_colors.dart';
+import 'package:harmoniq/utils/midi_instruments.dart';
 import 'package:harmoniq/widgets/note_tile.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -326,6 +327,49 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
               _currentTrack.name,
               style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: DropdownButton<int>(
+              value: _currentTrack.instrumentPreset,
+              dropdownColor: Theme.of(context).highlightColor,
+              icon: Icon(
+                Icons.music_note,
+                color: Theme.of(context).primaryColor,
+              ),
+              underline: Container(
+                height: 1,
+                color: Theme.of(context).primaryColor,
+              ),
+              onChanged: (int? newValue) {
+                if (newValue != null) {
+                  setState(() {
+                    _currentTrack.instrumentPreset = newValue;
+                  });
+                  _showToast(
+                    context,
+                    AppLocalizations.of(context)!.changedInstrument(
+                      MidiInstruments.instruments[newValue].toString(),
+                    ),
+                  );
+                }
+              },
+              items:
+                  MidiInstruments.instruments.entries.map<
+                    DropdownMenuItem<int>
+                  >((entry) {
+                    return DropdownMenuItem<int>(
+                      value: entry.key,
+                      child: Text(
+                        entry.value,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                    );
+                  }).toList(),
             ),
           ),
         ],
