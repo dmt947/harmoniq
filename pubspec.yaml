@@ -52,7 +52,11 @@ flutter:
   generate: true
 
   assets:
-   - assets/
+   - assets/sf2/alex_gm.sf2
+   - assets/images/home_background.png
+   - assets/images/login_background.png
+   - assets/images/signup_background.png
+   - assets/images/main_logo.png
   
   fonts:
     - family: Poppins
