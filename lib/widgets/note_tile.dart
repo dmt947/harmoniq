@@ -129,7 +129,7 @@ class _NoteTileState extends State<NoteTile> {
                 width: _currentNote.duration * widget.beatWidth,
                 height: widget.noteHeight,
                 decoration: BoxDecoration(
-                  color: Colors.greenAccent,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(4.0),
                 ),
               ),
@@ -160,7 +160,7 @@ class _NoteTileState extends State<NoteTile> {
                   child: Container(
                     width: 30,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).hoverColor.withOpacity(0.5),
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(4.0),
                         bottomRight: Radius.circular(4.0),
@@ -170,7 +170,7 @@ class _NoteTileState extends State<NoteTile> {
                     child: Icon(
                       Icons.drag_handle,
                       size: 16,
-                      color: Theme.of(context).primaryColorDark,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                   ),
                 ),

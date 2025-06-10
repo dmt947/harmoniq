@@ -21,7 +21,7 @@ class ProjectCard extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Card(
-        color: Theme.of(context).highlightColor,
+        color: Theme.of(context).highlightColor.withAlpha(255),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(12),
