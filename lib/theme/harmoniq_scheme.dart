@@ -6,11 +6,11 @@ class HarmoniqScheme {
     brightness: Brightness.light,
     primary: HarmoniqColors.primary,
     onPrimary: Colors.white,
-    secondary: HarmoniqColors.accent,
+    secondary: HarmoniqColors.lightAccent,
     onSecondary: Colors.white,
     surface: HarmoniqColors.lightSurface,
     onSurface: Colors.black87,
-    error: HarmoniqColors.error, 
+    error: HarmoniqColors.error,
     onError: Colors.white,
     background: HarmoniqColors.lightBackground,
     onBackground: Colors.black87,
@@ -19,9 +19,9 @@ class HarmoniqScheme {
   static const ColorScheme dark = ColorScheme(
     brightness: Brightness.dark,
     primary: HarmoniqColors.primary,
-    onPrimary: Colors.white, 
-    secondary: HarmoniqColors.accent,
-    onSecondary: Colors.white, 
+    onPrimary: Colors.white,
+    secondary: HarmoniqColors.darkAccent,
+    onSecondary: Colors.white,
     surface: HarmoniqColors.darkSurface,
     onSurface: Colors.white,
     error: HarmoniqColors.error,
@@ -30,4 +30,3 @@ class HarmoniqScheme {
     onBackground: Colors.white,
   );
 }
-

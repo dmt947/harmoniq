@@ -30,10 +30,6 @@ class HarmoniqTheme {
         labelColor: HarmoniqScheme.light.onSurface,
         unselectedLabelColor: HarmoniqScheme.light.onSurface.withAlpha(155),
         labelPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 7),
-        indicator: BoxDecoration(
-          color: HarmoniqScheme.light.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(24)),
-        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -110,12 +106,8 @@ class HarmoniqTheme {
       ),
       tabBarTheme: TabBarTheme(
         dividerColor: HarmoniqColors.lightBackground,
-        labelColor: HarmoniqScheme.dark.onSurface, // Texto de tab activo
+        labelColor: HarmoniqScheme.dark.onSurface,
         unselectedLabelColor: HarmoniqScheme.dark.onSurface.withOpacity(0.6),
-        indicator: BoxDecoration(
-          color: HarmoniqScheme.dark.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(24)),
-        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
