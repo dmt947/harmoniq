@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:harmoniq/screens/signup_page.dart';
 import 'package:harmoniq/widgets/block_button.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:harmoniq/widgets/google_signup_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -156,10 +157,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(AppLocalizations.of(context)!.loginButton),
         ),
         const SizedBox(height: 20),
-        Blockbutton(
-          onPressed: signInWithGoogle,
-          child: Text(AppLocalizations.of(context)!.loginWithGoogleButton),
-        ),
+        GoogleSignInButton(onPressed: signInWithGoogle),
       ],
     );
   }
@@ -210,7 +208,10 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image.asset('assets/images/main_logo.png', fit: BoxFit.contain,),
+                                    Image.asset(
+                                      'assets/images/main_logo.png',
+                                      fit: BoxFit.contain,
+                                    ),
                                     SizedBox(height: 40),
                                     _buildFormFields(context),
                                     const SizedBox(height: 30),
