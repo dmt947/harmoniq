@@ -183,7 +183,9 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 AppLocalizations.of(context)!.yourProjects,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: HarmoniqColors.lightBackground),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: HarmoniqColors.lightBackground,
+                ),
               ),
               const SizedBox(height: 16),
               Expanded(
@@ -266,7 +268,7 @@ class _NewProjectDialogContentState extends State<_NewProjectDialogContent> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).highlightColor.withAlpha(255),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: Text(
         AppLocalizations.of(context)!.newProjectTitle,
         style: Theme.of(context).textTheme.titleLarge,
@@ -284,14 +286,18 @@ class _NewProjectDialogContentState extends State<_NewProjectDialogContent> {
           onPressed: widget.onCancel,
           child: Text(
             AppLocalizations.of(context)!.cancel,
-            style: Theme.of(context).textTheme.labelMedium,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ),
         TextButton(
           onPressed: _handleCreateProject,
           child: Text(
             AppLocalizations.of(context)!.createProject,
-            style: Theme.of(context).textTheme.labelMedium,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
       ],
