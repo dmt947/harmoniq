@@ -1,5 +1,5 @@
 import 'package:flutter_midi_pro/flutter_midi_pro.dart';
-import 'package:harmoniq/models/music_project.dart'; 
+import 'package:harmoniq/models/music_project.dart';
 
 // Uses flutter_midi_pro
 class AudioService {
@@ -13,8 +13,8 @@ class AudioService {
   AudioService._internal();
 
   final MidiPro _synth = MidiPro();
-  bool isInitialized = false; 
-  int? _sfId; 
+  bool isInitialized = false;
+  int? _sfId;
 
   Future<void> init() async {
     if (isInitialized) {
@@ -22,16 +22,14 @@ class AudioService {
     }
     try {
       _sfId = await _synth.loadSoundfont(
-        path:
-            'assets/sf2/alex_gm.sf2',
+        path: 'assets/sf2/alex_gm.sf2',
         bank: 0,
         program: 0,
       );
       if (_sfId != null) {
         isInitialized = true;
       } else {
-        isInitialized =
-            false;
+        isInitialized = false;
       }
     } catch (e) {
       isInitialized = false;
@@ -51,8 +49,7 @@ class AudioService {
       key: key,
       velocity: velocity,
       channel: channel,
-      sfId:
-          _sfId!,
+      sfId: _sfId!,
     );
   }
 
@@ -63,12 +60,7 @@ class AudioService {
     if (!isInitialized || _sfId == null) {
       return;
     }
-    _synth.stopNote(
-      key: key,
-      channel: channel,
-      sfId:
-          _sfId!,
-    );
+    _synth.stopNote(key: key, channel: channel, sfId: _sfId!);
   }
 
   /// Stops all notes
@@ -77,7 +69,7 @@ class AudioService {
       return;
     }
     for (NoteEvent note in notes) {
-      _synth.stopNote(key: note.pitch, sfId: _sfId!); 
+      _synth.stopNote(key: note.pitch, sfId: _sfId!);
     }
   }
 
@@ -85,5 +77,19 @@ class AudioService {
     _synth.dispose();
     isInitialized = false;
     _sfId = null;
+  }
+
+  Future<void> changeInstrument({required int program, int channel = 0}) async {
+    if (!isInitialized || _sfId == null) {
+      return;
+    }
+    try {
+      await _synth.selectInstrument(
+        sfId: _sfId!,
+        program: program,
+        bank: 0,
+        channel: channel,
+      );
+    } catch (e) {}
   }
 }
