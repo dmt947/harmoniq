@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:harmoniq/screens/signup_page.dart';
 import 'package:harmoniq/widgets/block_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -63,13 +64,14 @@ class _LoginPageState extends State<LoginPage> {
       if (e is FirebaseAuthException) {
         final msg = switch (e.code) {
           'account-exists-with-different-credential' =>
-            'Ya existe una cuenta con otro método',
-          'invalid-credential' => 'Credencial inválida, intenta de nuevo',
-          _ => 'Error al iniciar sesión',
+            AppLocalizations.of(context)!.accountExistsWithDifferentCredential,
+          'invalid-credential' =>
+            AppLocalizations.of(context)!.invalidCredential,
+          _ => AppLocalizations.of(context)!.unknownSignInError,
         };
         _showError(msg);
       } else {
-        _showError('Ocurrió un error inesperado: $e');
+        _showError(AppLocalizations.of(context)!.unknownGenericError);
       }
     });
   }
@@ -87,15 +89,15 @@ class _LoginPageState extends State<LoginPage> {
     }).catchError((e) {
       if (e is FirebaseAuthException) {
         final msg = switch (e.code) {
-          'user-not-found' => 'Usuario no encontrado',
-          'wrong-password' => 'Contraseña incorrecta, intenta de nuevo',
-          'invalid-email' => 'Correo inválido',
-          'missing-fields' => 'Debes proporcionar un correo y contraseña',
-          _ => 'Error al iniciar sesión: ${e.code}',
+          'user-not-found' => AppLocalizations.of(context)!.userNotFound,
+          'wrong-password' => AppLocalizations.of(context)!.wrongPassword,
+          'invalid-email' => AppLocalizations.of(context)!.invalidEmail,
+          'missing-fields' => AppLocalizations.of(context)!.authMissingFields,
+          _ => AppLocalizations.of(context)!.unknownSignInError,
         };
         _showError(msg);
       } else {
-        _showError('Ocurrió un error inesperado: $e');
+        _showError(AppLocalizations.of(context)!.unknownGenericError);
       }
     });
   }
@@ -119,11 +121,15 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         _buildTextField(
           emailController,
-          'Correo electronico',
+          AppLocalizations.of(context)!.emailPlaceholder,
           keyboard: TextInputType.emailAddress,
         ),
         const SizedBox(height: 20),
-        _buildTextField(passwordController, 'Contraseña', obscure: true),
+        _buildTextField(
+          passwordController,
+          AppLocalizations.of(context)!.passwordPlaceholder,
+          obscure: true,
+        ),
         const SizedBox(height: 10),
         GestureDetector(
           onTap: () {
@@ -133,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
           child: Text(
-            'No tengo cuenta',
+            AppLocalizations.of(context)!.noAccount,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
@@ -147,12 +153,12 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Blockbutton(
           onPressed: signInWithCredentials,
-          child: const Text('Iniciar sesión'),
+          child: Text(AppLocalizations.of(context)!.loginButton),
         ),
         const SizedBox(height: 20),
         Blockbutton(
           onPressed: signInWithGoogle,
-          child: const Text('Iniciar sesión con Google'),
+          child: Text(AppLocalizations.of(context)!.loginWithGoogleButton),
         ),
       ],
     );
@@ -169,12 +175,19 @@ class _LoginPageState extends State<LoginPage> {
                 : Stack(
                   children: [
                     Container(
-                      color: Theme.of(context).appBarTheme.backgroundColor,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/login_background.png',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: AnimatedPadding(
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 100),
                         curve: Curves.easeOut,
                         padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -197,14 +210,8 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      'Harmoniq',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.displayMedium,
-                                    ),
-                                    const SizedBox(height: 40),
+                                    Image.asset('assets/images/main_logo.png', fit: BoxFit.contain,),
+                                    SizedBox(height: 40),
                                     _buildFormFields(context),
                                     const SizedBox(height: 30),
                                     _buildButtons(),

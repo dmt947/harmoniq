@@ -5,6 +5,7 @@ import 'package:harmoniq/services/player_service.dart';
 import 'package:harmoniq/theme/harmoniq_colors.dart';
 import 'package:harmoniq/widgets/note_tile.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Interacion mode enum
 enum NoteInteractionMode {
@@ -123,7 +124,7 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
 
     if (_isOverlapping(proposedNote, _currentTrack.notes)) {
       // Not adding a note
-      _showToast(context, 'No se puede añadir la nota: hay una superposición.');
+      _showToast(context, AppLocalizations.of(context)!.noteOverlapError);
       return;
     }
 
@@ -152,20 +153,14 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
 
         // Check for overlap
         if (_isOverlapping(newNote, notesWithoutOld)) {
-          _showToast(
-            context,
-            'No se puede mover/redimensionar: hay una superposición.',
-          );
+          _showToast(context, AppLocalizations.of(context)!.noteOverlapError);
           // On overlap, redo changes
         } else {
           // If there is no overlap, apply changes
           _currentTrack.notes[oldNoteIndex] = newNote;
         }
       } else {
-        _showToast(
-          context,
-          'Error: La nota a actualizar no se encontró en la lista.',
-        );
+        _showToast(context, AppLocalizations.of(context)!.unknownGenericError);
       }
     });
   }
@@ -185,22 +180,34 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                leading: const Icon(Icons.delete),
-                title: const Text('Eliminar nota'),
+                textColor: Theme.of(context).textTheme.bodyLarge?.color,
+                leading: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: Text(AppLocalizations.of(context)!.deleteNote),
                 onTap: () {
                   Navigator.pop(context, 'delete');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.open_with),
-                title: const Text('Mover nota'),
+                textColor: Theme.of(context).textTheme.bodyLarge?.color,
+                leading: Icon(
+                  Icons.open_with,
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: Text(AppLocalizations.of(context)!.moveNote),
                 onTap: () {
                   Navigator.pop(context, 'move');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.horizontal_rule),
-                title: const Text('Cambiar duración'),
+                textColor: Theme.of(context).textTheme.bodyLarge?.color,
+                leading: Icon(
+                  Icons.horizontal_rule,
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: Text(AppLocalizations.of(context)!.changeDuration),
                 onTap: () {
                   Navigator.pop(context, 'resize');
                 },
@@ -217,16 +224,13 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
           _currentlyInteractingNote = note;
           _currentMode = NoteInteractionMode.move;
         });
-        _showToast(tileContext, 'Arrastra el cuerpo de la nota para moverla');
+        _showToast(tileContext, AppLocalizations.of(context)!.dragNoteBody);
       } else if (value == 'resize') {
         setState(() {
           _currentlyInteractingNote = note;
           _currentMode = NoteInteractionMode.resize;
         });
-        _showToast(
-          tileContext,
-          'Arrastra el borde derecho de la nota para cambiar su duración',
-        );
+        _showToast(tileContext, AppLocalizations.of(context)!.dragNoteHandle);
       }
     });
   }
@@ -331,13 +335,15 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
 
   // Builds zoom slider
   Widget _buildZoomSlider() {
-    return Padding(
+    return Container(
+      color: Theme.of(context).highlightColor,
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Row(
         children: [
           Expanded(
             child: Slider(
               value: widget.zoomLevel,
+              min: 1.0,
               max: 3.0,
               divisions: 8,
               label: _getDisplayZoomPercentage(),
@@ -348,7 +354,7 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
           ),
           Text(
             _getDisplayZoomPercentage(),
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
         ],
       ),
@@ -389,14 +395,12 @@ class _MidiEditorTabState extends State<MidiEditorTab> {
               decoration: BoxDecoration(
                 color: Theme.of(context).highlightColor,
                 border: Border(
-                  bottom: BorderSide(
-                    color: HarmoniqColors.darkHiddenText.withValues(alpha: 0.3),
-                  ),
+                  bottom: BorderSide(color: Theme.of(context).hoverColor),
                 ),
               ),
               child: Text(
                 _pitchToLabel(pitch),
-                style: Theme.of(context).textTheme.labelMedium,
+                style: Theme.of(context).textTheme.bodyLarge,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
               ),
@@ -522,7 +526,7 @@ class _GridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = HarmoniqColors.darkHiddenText.withValues(alpha: 0.3)
+          ..color = HarmoniqColors.lightSurface
           ..strokeWidth = 1;
 
     for (double x = 0; x <= size.width; x += beatWidth) {

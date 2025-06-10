@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:harmoniq/screens/auth_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -11,14 +12,18 @@ class UserProfileScreen extends StatelessWidget {
 
     if (user == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Perfil de Usuario')),
-        body: const Center(child: Text('No hay usuario loggeado.')),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.profileScreenTitle),
+        ),
+        body: Center(
+          child: Text(AppLocalizations.of(context)!.usernamePlaceholder),
+        ),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil de Usuario'),
+        title: Text(AppLocalizations.of(context)!.profileScreenTitle),
       ),
       body: Center(
         child: Padding(
@@ -37,17 +42,18 @@ class UserProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                user.displayName ?? 'Nombre de Usuario',
+                user.displayName ??
+                    AppLocalizations.of(context)!.usernamePlaceholder,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 10),
               Text(
-                user.email ?? 'No email',
+                user.email ?? AppLocalizations.of(context)!.emailPlaceholder,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 150),
               ElevatedButton(
-                child: Text('Cerrar Sesion'),
+                child: Text(AppLocalizations.of(context)!.logoutButton),
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
                   if (context.mounted) {

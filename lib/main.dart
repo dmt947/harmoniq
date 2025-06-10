@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:harmoniq/screens/auth_screen.dart';
 import 'package:harmoniq/screens/splash_screen.dart';
 import 'package:harmoniq/theme/harmoniq_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,13 @@ class _HarmoniqState extends State<Harmoniq> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Harmoniq',
+      localizationsDelegates: const [
+        AppLocalizations.delegate, // El delegado generado
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en', ''), Locale('es', '')],
       darkTheme: HarmoniqTheme.darkTheme,
       theme: HarmoniqTheme.lightTheme,
       themeMode: ThemeMode.system,

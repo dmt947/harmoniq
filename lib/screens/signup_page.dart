@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:harmoniq/screens/login_page.dart';
 import 'package:harmoniq/widgets/block_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -29,12 +30,12 @@ class _SignupPageState extends State<SignupPage> {
     final username = _userController.text.trim();
 
     if (email.isEmpty || password.isEmpty || username.isEmpty) {
-      _showError('Completa todos los campos');
+      _showError(AppLocalizations.of(context)!.authMissingFields);
       return;
     }
 
     if (password != confirmPassword) {
-      _showError('Las contraseñas no coinciden');
+      _showError(AppLocalizations.of(context)!.passwordsDoNotMatch);
       return;
     }
 
@@ -51,17 +52,17 @@ class _SignupPageState extends State<SignupPage> {
 
       // Returns to AuthScreen
       Navigator.pop(context);
-      
     }).catchError((e) {
       if (e is FirebaseAuthException) {
         String msg = switch (e.code) {
-          'email-already-in-use' => 'El correo ya ha sido registrado',
-          'weak-password' => 'La contraseña debe tener más de 6 caracteres',
-          _ => 'Error al registrar: ${e.message}',
+          'email-already-in-use' =>
+            AppLocalizations.of(context)!.emailAlreadyInUse,
+          'weak-password' => AppLocalizations.of(context)!.invalidPassword,
+          _ => AppLocalizations.of(context)!.unknownSignUpError,
         };
         _showError(msg);
       } else {
-        _showError('Ocurrio un error inesperado: $e');
+        _showError(AppLocalizations.of(context)!.unknownGenericError);
       }
     });
   }
@@ -97,19 +98,26 @@ class _SignupPageState extends State<SignupPage> {
   Widget _buildFormFields(BuildContext context) {
     return Column(
       children: [
-        _buildTextField(_userController, 'Nombre de Usuario'),
+        _buildTextField(
+          _userController,
+          AppLocalizations.of(context)!.usernamePlaceholder,
+        ),
         const SizedBox(height: 20),
         _buildTextField(
           _emailController,
-          'Correo electrónico',
+          AppLocalizations.of(context)!.emailPlaceholder,
           keyboard: TextInputType.emailAddress,
         ),
         const SizedBox(height: 20),
-        _buildTextField(_passwordController, 'Contraseña', obscure: true),
+        _buildTextField(
+          _passwordController,
+          AppLocalizations.of(context)!.passwordPlaceholder,
+          obscure: true,
+        ),
         const SizedBox(height: 20),
         _buildTextField(
           _confirmPasswordController,
-          'Confirmar contraseña',
+          AppLocalizations.of(context)!.confirmPasswordPlaceholder,
           obscure: true,
         ),
         const SizedBox(height: 10),
@@ -121,7 +129,7 @@ class _SignupPageState extends State<SignupPage> {
             );
           },
           child: Text(
-            'Ya tengo cuenta',
+            AppLocalizations.of(context)!.alreadyHaveAccount,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
@@ -130,7 +138,10 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildButtons() {
-    return Blockbutton(onPressed: _signUp, child: const Text('Registrarme'));
+    return Blockbutton(
+      onPressed: _signUp,
+      child: Text(AppLocalizations.of(context)!.registerButton),
+    );
     //TODO: Add Google Button
   }
 
@@ -145,12 +156,19 @@ class _SignupPageState extends State<SignupPage> {
                 : Stack(
                   children: [
                     Container(
-                      color: Theme.of(context).appBarTheme.backgroundColor,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/signup_background.png',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: AnimatedPadding(
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 100),
                         curve: Curves.easeOut,
                         padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -171,7 +189,9 @@ class _SignupPageState extends State<SignupPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Crea una cuenta nueva',
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.createAccountTitle,
                                     style:
                                         Theme.of(
                                           context,

@@ -4,7 +4,9 @@ import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/screens/edit_project_page.dart';
 import 'package:harmoniq/screens/user_profile_screen.dart';
 import 'package:harmoniq/services/player_service.dart';
+import 'package:harmoniq/theme/harmoniq_colors.dart';
 import 'package:harmoniq/widgets/project_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,12 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<MusicProject> _projects = [
-    MusicProject(
-      id: '1',
-      name: 'Proyecto de Ejemplo',
-      tempo: 120.0,
-      genre: 'Pop',
-    ),
+    MusicProject(id: '1', name: 'Default', tempo: 120.0, genre: 'Pop'),
   ];
 
   final PlayerService _playerService = PlayerService();
@@ -29,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       SnackBar(
         duration: const Duration(seconds: 2),
         content: Text(
-          'Iniciando simulación de reproducción de "${project.name}"',
+          AppLocalizations.of(context)!.playerPlaying(project.name),
         ),
       ),
     );
@@ -43,15 +40,19 @@ class _HomePageState extends State<HomePage> {
           (_) => AlertDialog(
             backgroundColor: Theme.of(context).highlightColor,
             title: Text(
-              'Eliminar proyecto',
+              AppLocalizations.of(context)!.deleteProjectConfirmTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            content: Text('¿Seguro que quieres eliminar "${project.name}"?'),
+            content: Text(
+              AppLocalizations.of(
+                context,
+              )!.deleteProjectConfirmContent(project.name),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Cancelar',
+                  AppLocalizations.of(context)!.cancel,
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ),
@@ -61,12 +62,16 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pop(context); // Closes dialog
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Proyecto "${project.name}" eliminado.'),
+                      content: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.projectDeleted(project.name),
+                      ),
                     ),
                   );
                 },
                 child: Text(
-                  'Eliminar',
+                  AppLocalizations.of(context)!.delete,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -134,7 +139,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Hola, ${FirebaseAuth.instance.currentUser?.displayName ?? 'Usuario'}',
+          AppLocalizations.of(
+            context,
+          )!.helloUser(FirebaseAuth.instance.currentUser?.displayName ?? ''),
         ),
         actions: [
           GestureDetector(
@@ -162,39 +169,47 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'TUS PROYECTOS',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child:
-                  _projects.isEmpty
-                      ? Center(
-                        child: Text(
-                          'No hay proyectos aún. ¡Crea uno!',
-                          style: Theme.of(context).textTheme.bodyLarge,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/home_background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.yourProjects,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: HarmoniqColors.lightBackground),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child:
+                    _projects.isEmpty
+                        ? Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.noProjectsYet,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        )
+                        : ListView.builder(
+                          itemCount: _projects.length,
+                          itemBuilder: (context, index) {
+                            final project = _projects[index];
+                            return ProjectCard(
+                              project: project,
+                              onTap: () => _openProject(project),
+                              onLongPress: () => _deleteProject(project),
+                              onPlay: () => _playProject(project),
+                            );
+                          },
                         ),
-                      )
-                      : ListView.builder(
-                        itemCount: _projects.length,
-                        itemBuilder: (context, index) {
-                          final project = _projects[index];
-                          return ProjectCard(
-                            project: project,
-                            onTap: () => _openProject(project),
-                            onLongPress: () => _deleteProject(project),
-                            onPlay: () => _playProject(project),
-                          );
-                        },
-                      ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -241,8 +256,8 @@ class _NewProjectDialogContentState extends State<_NewProjectDialogContent> {
       widget.onProjectCreated(projectName);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('El nombre del proyecto no puede estar vacío.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.projectNameEmptyError),
         ),
       );
     }
@@ -251,16 +266,15 @@ class _NewProjectDialogContentState extends State<_NewProjectDialogContent> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).highlightColor,
+      backgroundColor: Theme.of(context).highlightColor.withAlpha(255),
       title: Text(
-        'Nuevo Proyecto',
+        AppLocalizations.of(context)!.newProjectTitle,
         style: Theme.of(context).textTheme.titleLarge,
       ),
       content: TextField(
         controller: _nameController,
-        decoration: const InputDecoration(
-          labelText: 'Nombre del Proyecto',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.projectName,
         ),
         autofocus: true,
         onSubmitted: (_) => _handleCreateProject(),
@@ -269,13 +283,16 @@ class _NewProjectDialogContentState extends State<_NewProjectDialogContent> {
         TextButton(
           onPressed: widget.onCancel,
           child: Text(
-            'Cancelar',
+            AppLocalizations.of(context)!.cancel,
             style: Theme.of(context).textTheme.labelMedium,
           ),
         ),
         TextButton(
           onPressed: _handleCreateProject,
-          child: Text('Crear', style: Theme.of(context).textTheme.labelMedium),
+          child: Text(
+            AppLocalizations.of(context)!.createProject,
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
         ),
       ],
     );

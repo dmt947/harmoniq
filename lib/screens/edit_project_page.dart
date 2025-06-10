@@ -3,6 +3,7 @@ import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/screens/tabs/ai_features_tab.dart';
 import 'package:harmoniq/screens/tabs/midi_editor_tab.dart';
 import 'package:harmoniq/screens/tabs/project_settings_tab.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditProjectPage extends StatefulWidget {
   final MusicProject project;
@@ -49,10 +50,10 @@ class _EditProjectPageState extends State<EditProjectPage>
         title: Text(widget.project.name),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.edit), text: 'Editor MIDI'), 
-            Tab(icon: Icon(Icons.chat), text: 'IA'),     
-            Tab(icon: Icon(Icons.settings), text: 'Ajustes'), 
+          tabs: [
+            Tab(icon:const Icon(Icons.edit), text: AppLocalizations.of(context)!.midiEditorTab), 
+            Tab(icon:const Icon(Icons.chat), text: AppLocalizations.of(context)!.aiFeaturesTab),     
+            Tab(icon:const Icon(Icons.settings), text: AppLocalizations.of(context)!.settingsTab), 
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:harmoniq/models/music_project.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectSettingsTab extends StatefulWidget {
   final MusicProject project;
@@ -24,9 +25,7 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
   final List<String> _genres = [
     'Pop',
     'Rock',
-    'Electrónica',
     'Hip Hop',
-    'Clásica',
     'Jazz',
     'Blues',
     'Folk',
@@ -69,7 +68,7 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
     widget.onProjectChanged();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('¡Ajustes del proyecto guardados!')),
+       SnackBar(content: Text(AppLocalizations.of(context)!.savedSettings)),
     );
   }
 
@@ -81,9 +80,8 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
         children: [
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: 'Nombre del Proyecto',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.projectName,
             ),
             onChanged: (value) {
               widget.project.name = value;
@@ -121,7 +119,6 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'BPM',
-                    border: OutlineInputBorder(),
                   ),
                   onSubmitted: (value) {
                     setState(() {
@@ -135,12 +132,13 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
           const SizedBox(height: 20),
 
           InputDecorator(
-            decoration: const InputDecoration(
-              labelText: 'Género Musical',
-              border: OutlineInputBorder(),
+            decoration:  InputDecoration(
+              labelText: AppLocalizations.of(context)!.musicalGenre,
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
+                style: Theme.of(context).textTheme.bodyLarge,
+                dropdownColor: Theme.of(context).highlightColor,
                 value: _selectedGenre,
                 isExpanded: true,
                 onChanged: (String? newValue) {
@@ -161,9 +159,8 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
           const SizedBox(height: 20),
           TextField(
             controller: _timeSignatureController,
-            decoration: const InputDecoration(
-              labelText: 'Compases (ej. 4/4)',
-              border: OutlineInputBorder(),
+            decoration:  InputDecoration(
+              labelText: AppLocalizations.of(context)!.timeSignature,
             ),
             readOnly: true,
           ),
@@ -172,7 +169,7 @@ class _ProjectSettingsTabState extends State<ProjectSettingsTab> {
           ElevatedButton.icon(
             onPressed: _saveProjectSettings,
             icon: const Icon(Icons.save),
-            label: const Text('Guardar Ajustes'),
+            label: Text(AppLocalizations.of(context)!.saveSettings),
           ),
         ],
       ),
