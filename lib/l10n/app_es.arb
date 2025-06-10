@@ -114,5 +114,10 @@
   "saveReminderNotificationTitle": "No vayas a perder tus cambios!",
   "saveReminderNotificationBody": "Recuerda guardar los cambios de {projectName} para no perderlos",
   "keepWorkingNotificationTitle": "Sigue creando musica increible!",
-  "keepWorkingNotificationBody": "Continua trabajando en {projectName}!"
+  "keepWorkingNotificationBody": "Continua trabajando en {projectName}!",
+  "profileSavedSuccess": "Perfil guardado exitosamente.",
+  "profileSaveError": "Error al guardar el perfil.",
+  "profileSaveErrorGeneric": "Error al guardar el perfil: {error}.",
+  "googleUserEditWarning": "Tu nombre y correo son gestionados por Google. No puedes editar aquí.",
+  "editProfileTitle":"Editar Perfil"
 }
