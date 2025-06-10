@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:harmoniq/screens/auth_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserProfileScreen extends StatelessWidget {
@@ -56,14 +55,8 @@ class UserProfileScreen extends StatelessWidget {
                 child: Text(AppLocalizations.of(context)!.logoutButton),
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
-                  if (context.mounted) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const AuthScreen(),
-                      ),
-                      (Route<dynamic> route) => false,
-                    );
-                  }
+                  // Goes back to HomePage, wich is managed by AuthScreen
+                  Navigator.pop(context);
                 },
               ),
             ],
