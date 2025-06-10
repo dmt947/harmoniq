@@ -21,7 +21,7 @@ class ProjectCard extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: Card(
-        color: Theme.of(context).highlightColor.withAlpha(255),
+        color: Theme.of(context).colorScheme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -42,7 +42,7 @@ class ProjectCard extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.play_arrow,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   size: 46,
                 ),
                 onPressed: onPlay,
