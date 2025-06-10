@@ -68,7 +68,7 @@ class Track {
     required this.name,
     required this.notes,
     this.minimumSubdivision = 0.25,
-    this.instrumentPreset = 52,
+    this.instrumentPreset = 1,
   });
 
   factory Track.empty({String? name, double? minimumSubdivision}) {
