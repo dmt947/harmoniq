@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/screens/tabs/ai_features_tab.dart';
 import 'package:harmoniq/screens/tabs/midi_editor_tab.dart';
 import 'package:harmoniq/screens/tabs/project_settings_tab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:harmoniq/services/project_service.dart';
 
 class EditProjectPage extends StatefulWidget {
   final MusicProject project;
@@ -17,8 +19,9 @@ class EditProjectPage extends StatefulWidget {
 class _EditProjectPageState extends State<EditProjectPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
-  double _globalZoomLevel = 2.0; 
+
+  double _globalZoomLevel = 2.0;
+  final ProjectService _projectService = ProjectService();
 
   @override
   void initState() {
@@ -39,8 +42,40 @@ class _EditProjectPageState extends State<EditProjectPage>
   }
 
   void _onProjectChanged() {
-    setState(() {
-    });
+    setState(() {});
+  }
+
+  Future<void> _onSaveProjectConfirmed() async {
+    await _saveProjectToFirestore();
+  }
+
+  Future<void> _saveProjectToFirestore() async {
+    try {
+      await _projectService.saveProject(widget.project);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.savedSettings)),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.notAuthenticated),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error : $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -51,9 +86,18 @@ class _EditProjectPageState extends State<EditProjectPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(icon:const Icon(Icons.edit), text: AppLocalizations.of(context)!.midiEditorTab), 
-            Tab(icon:const Icon(Icons.chat), text: AppLocalizations.of(context)!.aiFeaturesTab),     
-            Tab(icon:const Icon(Icons.settings), text: AppLocalizations.of(context)!.settingsTab), 
+            Tab(
+              icon: const Icon(Icons.edit),
+              text: AppLocalizations.of(context)!.midiEditorTab,
+            ),
+            Tab(
+              icon: const Icon(Icons.chat),
+              text: AppLocalizations.of(context)!.aiFeaturesTab,
+            ),
+            Tab(
+              icon: const Icon(Icons.settings),
+              text: AppLocalizations.of(context)!.settingsTab,
+            ),
           ],
         ),
       ),
@@ -73,6 +117,7 @@ class _EditProjectPageState extends State<EditProjectPage>
           ProjectSettingsTab(
             project: widget.project,
             onProjectChanged: _onProjectChanged,
+            onSave: _onSaveProjectConfirmed,
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/screens/edit_project_page.dart';
 import 'package:harmoniq/screens/user_profile_screen.dart';
 import 'package:harmoniq/services/player_service.dart';
+import 'package:harmoniq/services/project_service.dart';
 import 'package:harmoniq/theme/harmoniq_colors.dart';
 import 'package:harmoniq/widgets/project_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,11 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<MusicProject> _projects = [
-    MusicProject(id: '1', name: 'Default', tempo: 120.0, genre: 'Pop'),
-  ];
-
+  final ProjectService _projectService = ProjectService();
   final PlayerService _playerService = PlayerService();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _playProject(MusicProject project) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -57,18 +60,46 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               TextButton(
-                onPressed: () {
-                  setState(() => _projects.remove(project));
-                  Navigator.pop(context); // Closes dialog
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(
-                          context,
-                        )!.projectDeleted(project.name),
-                      ),
-                    ),
-                  );
+                onPressed: () async {
+                  try {
+                    await _projectService.deleteProject(project.id);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.projectDeleted(project.name),
+                          ),
+                        ),
+                      );
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.firebaseUnauthenticatedUserException,
+                          ),
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error : $e'),
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                      );
+                    }
+                  }
                 },
                 child: Text(
                   AppLocalizations.of(context)!.delete,
@@ -83,66 +114,98 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openProject(MusicProject project) {
+    _playerService.stop();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => EditProjectPage(project: project)),
     );
   }
 
-  // Opens add project dialog
   Future<void> _openAddProjectDialog() async {
     final MusicProject? newProject = await showDialog<MusicProject>(
       context: context,
       builder: (BuildContext dialogContext) {
         return _NewProjectDialogContent(
           onProjectCreated: (projectName) {
-            // Creates project
             final project = _createProjectInstance(projectName);
-            Navigator.of(
-              dialogContext,
-              // Closes dialog and returns the project
-            ).pop(project);
+            Navigator.of(dialogContext).pop(project);
           },
           onCancel: () {
-            Navigator.of(
-              dialogContext,
-              // Closes dialog without project
-            ).pop(null);
+            Navigator.of(dialogContext).pop(null);
           },
         );
       },
     );
 
     if (newProject != null) {
-      setState(() {
-        // Adds project
-        _projects.add(newProject);
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Opens new project
-        _openProject(newProject);
-      });
+      try {
+        await _projectService.saveProject(newProject);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.projectCreated(newProject.name),
+              ),
+            ),
+          );
+          _openProject(newProject);
+        }
+      } on FirebaseAuthException catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(
+                  context,
+                )!.firebaseUnauthenticatedUserException,
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      }
     }
   }
 
   MusicProject _createProjectInstance(String projectName) {
-    return MusicProject(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: projectName,
-      tempo: 120.0,
-      genre: 'Pop',
-    );
+    return MusicProject.empty(name: projectName);
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      print('Error al cerrar sesión: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al cerrar sesión: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    final String userName =
+        currentUser?.displayName ??
+        AppLocalizations.of(context)!.usernamePlaceholder;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(
-            context,
-          )!.helloUser(FirebaseAuth.instance.currentUser?.displayName ?? ''),
-        ),
+        title: Text(AppLocalizations.of(context)!.helloUser(userName)),
         actions: [
           GestureDetector(
             onTap: () {
@@ -155,13 +218,11 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: CircleAvatar(
                 backgroundImage:
-                    FirebaseAuth.instance.currentUser?.photoURL != null
-                        ? NetworkImage(
-                          FirebaseAuth.instance.currentUser!.photoURL!,
-                        )
+                    currentUser?.photoURL != null
+                        ? NetworkImage(currentUser!.photoURL!)
                         : null,
                 child:
-                    FirebaseAuth.instance.currentUser?.photoURL == null
+                    currentUser?.photoURL == null
                         ? const Icon(Icons.person)
                         : null,
               ),
@@ -170,7 +231,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/home_background.png'),
             fit: BoxFit.cover,
@@ -189,26 +250,44 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child:
-                    _projects.isEmpty
-                        ? Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.noProjectsYet,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        )
-                        : ListView.builder(
-                          itemCount: _projects.length,
-                          itemBuilder: (context, index) {
-                            final project = _projects[index];
-                            return ProjectCard(
-                              project: project,
-                              onTap: () => _openProject(project),
-                              onLongPress: () => _deleteProject(project),
-                              onPlay: () => _playProject(project),
-                            );
-                          },
+                child: StreamBuilder<List<MusicProject>>(
+                  stream: _projectService.getProjects(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          'Error: ${snapshot.error}',
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(color: HarmoniqColors.error),
+                          textAlign: TextAlign.center,
                         ),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noProjectsYet,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      );
+                    } else {
+                      final projects = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: projects.length,
+                        itemBuilder: (context, index) {
+                          final project = projects[index];
+                          return ProjectCard(
+                            project: project,
+                            onTap: () => _openProject(project),
+                            onLongPress: () => _deleteProject(project),
+                            onPlay: () => _playProject(project),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
             ],
           ),
@@ -222,7 +301,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// Add project dialog content widget
 class _NewProjectDialogContent extends StatefulWidget {
   final ValueChanged<String> onProjectCreated;
   final VoidCallback onCancel;
