@@ -25,7 +25,7 @@ class GoogleSignInButton extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           const Text(
-            'Iniciar sesión con Google',
+            'Sign in with Google',
             style: TextStyle(
               color: Colors.black87,
               fontSize: 16,
