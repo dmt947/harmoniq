@@ -1,22 +1,8 @@
 name: harmoniq
 description: "A flutter mobile app that uses ai to create music in an intuitive way." 
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+publish_to: 'none' 
+version: 1.0.1+1
 
 environment:
   sdk: ^3.7.2
@@ -51,9 +37,9 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter_launcher_icons:
-  image_path: "assets/images/icon_logo.png"
-  android: true
+  android: "launcher_icon"
   ios: true
+  image_path: "assets/images/icon_logo.png"
 
 flutter:
 
@@ -61,12 +47,8 @@ flutter:
   generate: true
 
   assets:
-   - assets/sf2/alex_gm.sf2
-   - assets/images/home_background.png
-   - assets/images/login_background.png
-   - assets/images/signup_background.png
-   - assets/images/main_logo.png
-   - assets/images/google_logo.png
+   - assets/sf2/
+   - assets/images/
   
   fonts:
     - family: Poppins
