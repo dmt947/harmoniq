@@ -1,6 +1,7 @@
 🎶 Harmoniq: Tu Estudio Musical Personal con IA 🎶
 
 ¡Bienvenido a Harmoniq! Una aplicación móvil innovadora que te permite crear y editar música con un intuitivo editor MIDI, potenciado por capacidades de inteligencia artificial que te ayudarán a componer y transformar tus melodías. Ya seas un músico experimentado o un principiante curioso, Harmoniq está aquí para impulsar tu creatividad.
+
 ✨ Características Destacadas
 
     Editor MIDI Visual: Crea y edita notas musicales de forma intuitiva en una interfaz de piano roll.
