@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:harmoniq/models/music_project.dart';
 import 'package:harmoniq/screens/edit_project_page.dart';
 import 'package:harmoniq/screens/settings_page.dart';
-import 'package:harmoniq/screens/user_profile_screen.dart';
 import 'package:harmoniq/services/player_service.dart';
 import 'package:harmoniq/services/project_service.dart';
 import 'package:harmoniq/theme/harmoniq_colors.dart';
@@ -76,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     }
-                  } on FirebaseAuthException catch (e) {
+                  } on FirebaseAuthException {
                     if (context.mounted) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -151,7 +150,7 @@ class _HomePageState extends State<HomePage> {
           );
           _openProject(newProject);
         }
-      } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -181,22 +180,6 @@ class _HomePageState extends State<HomePage> {
     return MusicProject.empty(name: projectName);
   }
 
-  Future<void> _signOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-    } catch (e) {
-      print('Error al cerrar sesión: $e');
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al cerrar sesión: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
@@ -219,68 +202,71 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/home_background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.yourProjects,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: HarmoniqColors.lightBackground,
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/home_background.png'),
+                fit: BoxFit.cover,
               ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: StreamBuilder<List<MusicProject>>(
-                  stream: _projectService.getProjects(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          'Error: ${snapshot.error}',
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(color: HarmoniqColors.error),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.noProjectsYet,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      );
-                    } else {
-                      final projects = snapshot.data!;
-                      return ListView.builder(
-                        itemCount: projects.length,
-                        itemBuilder: (context, index) {
-                          final project = projects[index];
-                          return ProjectCard(
-                            project: project,
-                            onTap: () => _openProject(project),
-                            onLongPress: () => _deleteProject(project),
-                            onPlay: () => _playProject(project),
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          Container(color: Theme.of(context).scaffoldBackgroundColor.withAlpha(128)),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.yourProjects,
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: HarmoniqColors.lightSurface)
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: StreamBuilder<List<MusicProject>>(
+                    stream: _projectService.getProjects(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error: ${snapshot.error}',
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: HarmoniqColors.error),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.noProjectsYet,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        );
+                      } else {
+                        final projects = snapshot.data!;
+                        return ListView.builder(
+                          itemCount: projects.length,
+                          itemBuilder: (context, index) {
+                            final project = projects[index];
+                            return ProjectCard(
+                              project: project,
+                              onTap: () => _openProject(project),
+                              onLongPress: () => _deleteProject(project),
+                              onPlay: () => _playProject(project),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _openAddProjectDialog,
