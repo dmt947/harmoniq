@@ -1,17 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:harmoniq/models/music_project.dart';
-
 import 'package:harmoniq/screens/tabs/ai_features_tab.dart';
-
 import 'package:harmoniq/screens/tabs/midi_editor_tab.dart';
-
 import 'package:harmoniq/screens/tabs/project_settings_tab.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:harmoniq/services/project_service.dart';
 
 class EditProjectPage extends StatefulWidget {
@@ -68,7 +61,7 @@ class _EditProjectPageState extends State<EditProjectPage>
           SnackBar(content: Text(AppLocalizations.of(context)!.savedSettings)),
         );
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
