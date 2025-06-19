@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:harmoniq/utils/app_constants.dart'; 
-import 'package:harmoniq/main.dart'; 
+import 'package:harmoniq/utils/app_constants.dart';
+import 'package:harmoniq/main.dart';
 import 'package:harmoniq/screens/user_profile_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -20,17 +20,14 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    const String appVersion = '1.0.0';
+    const String appVersion = '1.0.1';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.settingsTitle), 
-      ),
+      appBar: AppBar(title: Text(localizations.settingsTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          
-          _buildSectionTitle(localizations.themeSettings), 
+          _buildSectionTitle(localizations.themeSettings),
           Card(
             margin: const EdgeInsets.only(bottom: 20.0),
             child: Padding(
@@ -45,13 +42,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       setState(() {
                         _selectedThemeMode = newValue;
                       });
-                      currentThemeMode.value =
-                          newValue; 
+                      currentThemeMode.value = newValue;
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setString(
                         AppConstants.themeModeKey,
                         newValue.toString(),
-                      ); 
+                      );
                     }
                   },
                   items: [
@@ -65,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     DropdownMenuItem(
                       value: ThemeMode.dark,
-                      child: Text(localizations.themeDark), 
+                      child: Text(localizations.themeDark),
                     ),
                   ],
                 ),
@@ -73,10 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          // Sección de Idioma
-          _buildSectionTitle(
-            localizations.languageSettings,
-          ), // Título localizado
+          _buildSectionTitle(localizations.languageSettings),
           Card(
             margin: const EdgeInsets.only(bottom: 20.0),
             child: Padding(
@@ -90,8 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {
                       _selectedLocale = newValue;
                     });
-                    currentLocale.value =
-                        newValue;
+                    currentLocale.value = newValue;
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setString(
                       AppConstants.localeKey,
@@ -106,9 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ...AppLocalizations.supportedLocales.map((locale) {
                       return DropdownMenuItem(
                         value: locale,
-                        child: Text(
-                          locale.languageCode,
-                        ),
+                        child: Text(locale.languageCode),
                       );
                     }),
                   ],
@@ -117,8 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          
-          _buildSectionTitle(localizations.userProfile), 
+          _buildSectionTitle(localizations.userProfile),
           Card(
             margin: const EdgeInsets.only(bottom: 20.0),
             child: ListTile(
@@ -136,8 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          
-          _buildSectionTitle(localizations.appInfo), 
+          _buildSectionTitle(localizations.appInfo),
           Card(
             margin: const EdgeInsets.only(bottom: 20.0),
             child: Padding(
@@ -151,7 +139,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${localizations.version}: $appVersion', 
+                    '${localizations.version}: $appVersion',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
