@@ -76,3 +76,6 @@
     Pestaña de Ajustes: Aquí podrás modificar los ajustes de tu proyecto (tempo, género, etc.).
 
     Perfil de Usuario: Toca tu avatar en la página principal para ver y editar tu perfil (nombre de usuario, correo electrónico).
+
+Este proyecto esta bajo la licencia Apache 2.0. Los detalles se pueden ver aqui:
+[LICENCE](./LICENSE)
