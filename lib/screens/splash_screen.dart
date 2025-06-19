@@ -1,4 +1,3 @@
-//import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Cargar Modo de Tema
     final themeModeString = prefs.getString(AppConstants.themeModeKey);
     if (themeModeString != null) {
       currentThemeMode.value = ThemeMode.values.firstWhere(
@@ -37,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
 
-    // Cargar Idioma
     final localeString = prefs.getString(AppConstants.localeKey);
     if (localeString != null && localeString.isNotEmpty) {
       currentLocale.value = Locale(localeString);
@@ -45,30 +42,6 @@ class _SplashScreenState extends State<SplashScreen> {
       currentLocale.value = null;
     }
   }
-
-  // Future<void> _loadNotifications() async {
-  //   AwesomeNotifications().initialize(
-  //     null, // Usa el ícono por defecto (@mipmap/ic_launcher)
-  //     [
-  //       NotificationChannel(
-  //         channelKey: 'notification-channel',
-  //         channelName: 'Harmoniq',
-  //         channelDescription: 'Notifications for Harmoniq',
-  //         defaultColor: HarmoniqColors.primary,
-  //         ledColor: Colors.white,
-  //         importance: NotificationImportance.High,
-  //         channelShowBadge: true,
-  //       ),
-  //     ],
-  //   );
-
-  //   // Pide permiso en Android 13+ e iOS
-  //   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-  //     if (!isAllowed) {
-  //       AwesomeNotifications().requestPermissionToSendNotifications();
-  //     }
-  //   });
-  // }
 
   Future<void> _initSplash() async {
     await Firebase.initializeApp(
