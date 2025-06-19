@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -18,14 +19,10 @@ class GoogleSignInButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            'assets/google_logo.png',
-            height: 24,
-            width: 24,
-          ),
+          Image.asset('assets/images/google_logo.png', height: 24, width: 24),
           const SizedBox(width: 12),
-          const Text(
-            'Sign in with Google',
+          Text(
+            AppLocalizations.of(context)!.loginWithGoogleButton,
             style: TextStyle(
               color: Colors.black87,
               fontSize: 16,
